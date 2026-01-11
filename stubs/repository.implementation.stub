@@ -1,0 +1,17 @@
+<?php
+
+namespace App\Engine\{{modelName}}\Repositories\Eloquent;
+
+use App\Engine\{{modelName}}\Repositories\Contracts\{{modelName}}RepositoryInterface;
+use App\Engine\Base\Repositories\BaseRepository;
+use App\Models\{{modelName}};
+
+class {{modelName}}Repository extends BaseRepository implements {{modelName}}RepositoryInterface
+{
+    public function __construct()
+    {
+        parent::__construct({{modelName}}::class); // Assuming your model is named {{modelName}}
+    }
+
+    // You can add custom methods specific to {{modelName}} here
+}

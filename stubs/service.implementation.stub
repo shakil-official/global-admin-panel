@@ -1,0 +1,25 @@
+<?php
+
+namespace App\Engine\{{modelName}}\Services;
+
+use App\Engine\Base\Services\BaseService;
+use App\Engine\{{modelName}}\Services\Contracts\{{modelName}}ServiceInterface;
+use App\Engine\{{modelName}}\Repositories\Contracts\{{modelName}}RepositoryInterface;
+
+
+
+class {{modelName}}Service extends BaseService implements {{modelName}}ServiceInterface
+{
+    protected $repository;
+
+    public function __construct({{modelName}}RepositoryInterface $repository)
+    {
+        $this->repository = $repository;
+
+         parent::__construct($this->repository);
+    }
+
+    // Implement methods from the BaseServiceInterface here
+
+    // You can also add custom methods specific to {{modelName}} here
+}

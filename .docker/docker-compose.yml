@@ -1,0 +1,32 @@
+services:
+    admin-dashboard-nginx:
+        build:
+            context: ./nginx  # Make sure this path exists for the Nginx Dockerfile
+            dockerfile: Dockerfile
+        container_name: admin-dashboard-nginx
+        restart: unless-stopped
+        environment:
+            - PHP_HOST=admin-dashboard-php-app
+        volumes:
+            - ../:/var/www/html  # Mount the project root
+        ports:
+            - "3017:80"
+        networks:
+            - hellosyl
+        depends_on:
+            - admin-dashboard-php-app  # Nginx should depend on PHP
+
+    admin-dashboard-php-app:
+        build:
+            context: ./php  # Points to the Dockerfile in .docker/php
+            dockerfile: Dockerfile
+        container_name: admin-dashboard-php-app
+        restart: unless-stopped
+        volumes:
+            - ../:/var/www/html  # Mount the project root
+        networks:
+            - hellosyl
+
+networks:
+    hellosyl: # Use the existing 'hellosyl' network
+        external: true
