@@ -7,7 +7,7 @@
 
     <title>{{ getenv('APP_NAME') }}</title>
 
-    <link rel="stylesheet" href="{{ asset('/theme/assets/css/custom_import.css') }}">
+{{--    <link rel="stylesheet" href="{{ asset('/theme/assets/css/custom_import.css') }}">--}}
 
     @viteReactRefresh
     @vite(['resources/js/app.jsx', 'resources/css/app.css'])

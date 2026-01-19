@@ -11,7 +11,7 @@ const Landing = () => {
                 {/* Navbar */}
                 <nav className="fixed top-0 left-0 w-full bg-white/90 backdrop-blur shadow-sm z-50">
                     <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-                        <h1 className="text-2xl font-bold text-blue-600">MyBrand</h1>
+                        <h1 className="text-2xl font-bold text-textPrimary">HelloSyl</h1>
                         <ul className="hidden md:flex space-x-8 font-medium">
                             <li><a href="#home" className="hover:text-blue-600">Home</a></li>
                             <li><a href="#features" className="hover:text-blue-600">Features</a></li>
@@ -19,7 +19,7 @@ const Landing = () => {
                             <li><a href="#pricing" className="hover:text-blue-600">Pricing</a></li>
                             <li><a href="#contact" className="hover:text-blue-600">Contact</a></li>
                         </ul>
-                        <button className="hidden md:inline-block bg-blue-600 text-white px-5 py-2 rounded-xl">
+                        <button className="hidden md:inline-block bg-primary text-white px-5 py-2 rounded-xl">
                             Get Started
                         </button>
                     </div>
@@ -28,8 +28,7 @@ const Landing = () => {
                 {/* Hero */}
                 <section
                     id="home"
-                    className="pt-32 bg-gradient-to-br from-blue-600 to-indigo-700 text-white"
-                >
+                    className="pt-52 bg-primary text-white" style={{backgroundImage: "url('/images/hero/18338173.jpg')",}}>
                     <div className="max-w-7xl mx-auto px-6 py-24 grid md:grid-cols-2 gap-12 items-center">
                         <div>
                             <h2 className="text-4xl md:text-5xl font-bold mb-6 leading-tight">
@@ -49,7 +48,7 @@ const Landing = () => {
                             </div>
                         </div>
                         <div className="hidden md:block">
-                            <div className="h-96 rounded-3xl bg-white/20 shadow-inner"/>
+
                         </div>
                     </div>
                 </section>
@@ -106,7 +105,7 @@ const Landing = () => {
                     <div className="max-w-7xl mx-auto px-6 text-center">
                         <h3 className="text-3xl font-bold mb-12">Simple Pricing</h3>
                         <div className="grid md:grid-cols-3 gap-10">
-                            {["Starter", "Professional", "Enterprise","Starter", "Professional", "Enterprise", "Starter", "Professional", "Enterprise"].map((plan) => (
+                            {["Starter", "Professional", "Enterprise", "Starter", "Professional", "Enterprise", "Starter", "Professional", "Enterprise"].map((plan) => (
                                 <div key={plan} className="bg-white p-10 rounded-3xl shadow-sm">
                                     <h4 className="text-xl font-semibold mb-4">{plan}</h4>
                                     <p className="text-4xl font-bold mb-6">$29</p>
