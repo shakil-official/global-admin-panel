@@ -165,11 +165,6 @@ class GlobalSubCategoryController extends Controller
         // Adjust positions of existing slider images
         $providedPosition = $request->get('position');
 
-//        DB::table('global_categories')
-//            ->where('position', '>=', $providedPosition)
-//            ->increment('position', 1);
-
-
         $response = $this->service->create([
             'name' => $request->get('name'),
             'position' => $providedPosition,
@@ -191,10 +186,9 @@ class GlobalSubCategoryController extends Controller
         $globalCategories = GlobalCategory::query()
             ->get()
             ->mapWithKeys(function ($item) {
-                $reason = $item->reason == GlobalCategory::REASON_SPRINGERED ? 'SPRINGERED' : 'WHAT WE DO';
 
                 return [
-                    $item->id => $item->name . ' ( ' . $reason . ' )'
+                    $item->id => $item->name
                 ];
             })
             ->toArray();
@@ -307,10 +301,9 @@ class GlobalSubCategoryController extends Controller
 
         // Adjust positions if the position is changing
         $globalSubCategory = GlobalSubCategory::query()->findOrFail($id);// Get the current and new positions
-//        $currentPosition = $globalSubCategory->position;
         $newPosition = $request->input('position');// If the position remains unchanged, update only the name or other fields
 
-//        if ($currentPosition == $newPosition) {
+
         $globalSubCategory->update([
             'name' => $request->get('name'),
             'global_category_id' => $request->get('category_id'),
@@ -318,39 +311,8 @@ class GlobalSubCategoryController extends Controller
             'position' => $newPosition,
         ]);
 
-        return redirect()->route('global_sub_category.index')->with('success', 'GlobalCategory updated successfully.');
-//        }
+        return redirect()->route('global_sub_category.index')->with('success', 'Sub Category updated successfully.');
 
-
-        // Adjust positions of other global_sub_categories
-//        if ($newPosition < $currentPosition) {
-//            // Shift global_sub_categories down (increment position) between the new and current positions
-//            DB::table('global_sub_categories')
-//                ->where('id', '!=', $id)
-//                ->whereBetween('position', [$newPosition, $currentPosition - 1])
-//                ->increment('position');
-//        } elseif ($newPosition > $currentPosition) {
-//            // Shift global_sub_categories up (decrement position) between the current and new positions
-//            DB::table('global_sub_categories')
-//                ->where('id', '!=', $id)
-//                ->whereBetween('position', [$currentPosition + 1, $newPosition])
-//                ->decrement('position');
-//        }
-//
-//        // Update the category's position and other fields
-//        $response = $globalSubCategory->update(array_merge([
-//            'id' => $id,
-//            'name' => $request->get('name'),
-//            'global_category_id' => $request->get('category_id'),
-//            'description' => $request->get('description'),
-//        ], ['position' => $newPosition]));
-//
-//
-//        if ($response) {
-//            return redirect()->route('global_sub_category.index')->with('success', 'GlobalSubCategory updated successfully.');
-//        }
-
-//        return redirect()->back()->with('error', 'Something went wrong. Please try again.');
     }
 
     public function delete(Request $request): JsonResponse

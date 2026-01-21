@@ -17,6 +17,8 @@ use App\Engine\GlobalSubCategory\Repositories\Contracts\GlobalSubCategoryReposit
 use App\Engine\GlobalSubCategory\Repositories\Eloquent\GlobalSubCategoryRepository;
 use App\Engine\SliderImage\Repositories\Contracts\SliderImageRepositoryInterface;
 use App\Engine\SliderImage\Repositories\Eloquent\SliderImageRepository;
+use App\Engine\SubCategory\Repositories\Contracts\SubCategoryRepositoryInterface;
+use App\Engine\SubCategory\Repositories\Eloquent\SubCategoryRepository;
 use App\Engine\TermsAndCondition\Repositories\Contracts\TermsAndConditionRepositoryInterface;
 use App\Engine\TermsAndCondition\Repositories\Eloquent\TermsAndConditionRepository;
 use Illuminate\Support\ServiceProvider;
@@ -36,6 +38,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(GlobalCategoryRepositoryInterface::class, GlobalCategoryRepository::class);
         $this->app->bind(GlobalSubCategoryRepositoryInterface::class, GlobalSubCategoryRepository::class);
         $this->app->bind(FeedbackRepositoryInterface::class, FeedbackRepository::class);
+        $this->app->bind(SubCategoryRepositoryInterface::class, SubCategoryRepository::class);
     }
 
     /**

@@ -74,13 +74,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 
     /* start here */
-    Route::get('/category', [App\Http\Controllers\GlobalCategory\GlobalCategoryController::class, 'index'])->name('global_category.index');
-    Route::get('/category/list', [App\Http\Controllers\GlobalCategory\GlobalCategoryController::class, 'dataTableList'])->name('global_category.list');
-    Route::get('/category/add', [App\Http\Controllers\GlobalCategory\GlobalCategoryController::class, 'add'])->name('global_category.add');
-    Route::post('/category/store', [App\Http\Controllers\GlobalCategory\GlobalCategoryController::class, 'store'])->name('global_category.store');
-    Route::get('/category/edit/{id}', [App\Http\Controllers\GlobalCategory\GlobalCategoryController::class, 'edit'])->name('global_category.edit');
-    Route::post('/category/update/{id}', [App\Http\Controllers\GlobalCategory\GlobalCategoryController::class, 'update'])->name('global_category.update');
-    Route::delete('/category/delete', [App\Http\Controllers\GlobalCategory\GlobalCategoryController::class, 'delete'])->name('global_category.delete');
+    Route::get('/service/type', [App\Http\Controllers\GlobalCategory\GlobalCategoryController::class, 'index'])->name('global_category.index');
+    Route::get('/service/type/list', [App\Http\Controllers\GlobalCategory\GlobalCategoryController::class, 'dataTableList'])->name('global_category.list');
+    Route::get('/service/type/add', [App\Http\Controllers\GlobalCategory\GlobalCategoryController::class, 'add'])->name('global_category.add');
+    Route::post('/service/type/store', [App\Http\Controllers\GlobalCategory\GlobalCategoryController::class, 'store'])->name('global_category.store');
+    Route::get('/service/type/edit/{id}', [App\Http\Controllers\GlobalCategory\GlobalCategoryController::class, 'edit'])->name('global_category.edit');
+    Route::post('/service/type/update/{id}', [App\Http\Controllers\GlobalCategory\GlobalCategoryController::class, 'update'])->name('global_category.update');
+    Route::delete('/service/type/delete', [App\Http\Controllers\GlobalCategory\GlobalCategoryController::class, 'delete'])->name('global_category.delete');
 
     Route::get('/services', [App\Http\Controllers\GlobalSubCategory\GlobalSubCategoryController::class, 'index'])->name('global_sub_category.index');
     Route::get('/services/list', [App\Http\Controllers\GlobalSubCategory\GlobalSubCategoryController::class, 'dataTableList'])->name('global_sub_category.list');
@@ -100,6 +100,17 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/feedback/delete', [FeedbackController::class, 'delete'])->name('feedback.delete');
 
     Route::get('logs', [LogViewerController::class, 'index']);
+
+
+    Route::get('/sub/category', [App\Http\Controllers\SubCategory\SubCategoryController::class, 'index'])->name('subcategory.index');
+    Route::get('/sub/category/list', [App\Http\Controllers\SubCategory\SubCategoryController::class, 'dataTableList'])->name('SubCategory.list');
+    Route::get('/sub/category/add', [App\Http\Controllers\SubCategory\SubCategoryController::class, 'add'])->name('subcategory.add');
+    Route::post('/sub/category/store', [App\Http\Controllers\SubCategory\SubCategoryController::class, 'store'])->name('subcategory.store');
+    Route::get('/sub/category/edit/{id}', [App\Http\Controllers\SubCategory\SubCategoryController::class, 'edit'])->name('subcategory.edit');
+    Route::post('/sub/category/update/{id}', [App\Http\Controllers\SubCategory\SubCategoryController::class, 'update'])->name('subcategory.update');
+    Route::delete('/sub/category/delete', [App\Http\Controllers\SubCategory\SubCategoryController::class, 'delete'])->name('SubCategory.delete');
+
+
 });
 
 

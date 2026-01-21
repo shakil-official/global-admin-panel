@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\GlobalCategory;
+namespace App\Http\Controllers\SubCategory;
 
-use App\Engine\GlobalCategory\Services\Contracts\GlobalCategoryServiceInterface;
+use App\Engine\SubCategory\Services\Contracts\SubCategoryServiceInterface;
 use App\Helpers\Builder\FormMaking;
 use App\Http\Controllers\Controller;
-use App\Models\GlobalCategory;
+use App\Models\Category;
+use App\Models\SubCategory;
 use Exception;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
@@ -13,36 +14,36 @@ use Illuminate\Foundation\Application;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 use Yajra\DataTables\Facades\DataTables;
 
-class GlobalCategoryController extends Controller
+class SubCategoryController extends Controller
 {
-    private GlobalCategoryServiceInterface $service;
+    private SubCategoryServiceInterface $service;
 
-    public function __construct(GlobalCategoryServiceInterface $service)
+    public function __construct(SubCategoryServiceInterface $service)
     {
         $this->service = $service;
     }
 
     public function index(): View|Application|Factory|\Illuminate\Contracts\Foundation\Application
     {
-        return view('backend.global_category.index')->with([
-            'title' => 'Service Type',
+        return view('backend.subcategory.index')->with([
+            'title' => 'Sub Category',
             'buttons' => [
                 [
-                    'label' => 'Add New',
-                    'url' => route('global_category.add'),
+                    'label' => 'Add New Item',
+                    'url' => route('subcategory.add'),
                     'icon' => 'ri-add-line',
                     'classes' => 'btn-sm btn-outline-primary',
                 ],
             ],
-            'table' => 'global_category_table',
+            'table' => 'subcategory_table',
             'columns' => [
                 "Name",
-                "Position",
+                "Status",
                 "Action"
             ],
         ]);
@@ -50,8 +51,18 @@ class GlobalCategoryController extends Controller
 
     public function add(): Factory|Application|View|\Illuminate\Contracts\Foundation\Application
     {
+        $categories = Category::query()
+            ->get()
+            ->mapWithKeys(function ($item) {
+                return [
+                    $item->id => $item->name
+                ];
+            })
+            ->toArray();
+
+
         $formConfig = (new FormMaking())
-            ->action(route('global_category.store'))
+            ->action(route('subcategory.store'))
             ->method('POST')
             ->startRow()
             ->addFormFields([
@@ -81,8 +92,20 @@ class GlobalCategoryController extends Controller
             ->endRow()
             ->startRow()
             ->addInput([
+                'type' => 'select',
+                'name' => 'category_id',
+                'label' => 'Category',
+                'col' => 'col-md-12 mb-3',
+                'options' => $categories,
+                'value' => old('category_id', ''),
+                'required' => true,
+                'invalid_feedback' => 'Please select a valid category.',
+            ])
+            ->endRow()
+            ->startRow()
+            ->addInput([
                 'type' => 'submit',
-                'value' => 'Add new category',
+                'value' => 'Add new sub category',
                 'col' => 'col-12 mb-3',
                 'icon' => 'ri-add-line',
                 'class' => 'btn btn-sm btn-primary',
@@ -90,12 +113,12 @@ class GlobalCategoryController extends Controller
             ->endRow()
             ->build();
 
-        return view('backend.global_category.add')->with([
-            'title' => 'GlobalCategory Add',
+        return view('backend.subcategory.add')->with([
+            'title' => 'SubCategory Add',
             'buttons' => [
                 [
                     'label' => 'Add New',
-                    'url' => route('global_category.index'),
+                    'url' => route('subcategory.index'),
                     'icon' => 'ri-add-line',
                     'classes' => 'btn-sm btn-outline-primary',
                 ],
@@ -112,20 +135,13 @@ class GlobalCategoryController extends Controller
         $this->validate($request, [
             'name' => 'required',
             'position' => 'required|numeric|min:1',
+            'category_id' => 'required',
         ]);
 
-        // Adjust positions of existing slider images
-        $providedPosition = $request->get('position');
-
-
-
-        $response = $this->service->create([
-            'name' => $request->get('name'),
-            'position' => $providedPosition,
-        ]);
+        $response = $this->service->create($request->all());
 
         if ($response) {
-            return redirect()->route('global_category.index')->with('success', 'Category added successfully.');
+            return redirect()->route('subcategory.index')->with('success', 'Sub Category added successfully.');
         }
 
         return redirect()->back()->with('error', 'Something went wrong. Please try again.');
@@ -135,9 +151,18 @@ class GlobalCategoryController extends Controller
     {
         $data = $this->service->find($id);
 
+        $categories = Category::query()
+            ->get()
+            ->mapWithKeys(function ($item) {
+                return [
+                    $item->id => $item->name
+                ];
+            })
+            ->toArray();
+
 
         $formConfig = (new FormMaking())
-            ->action(route('global_category.update', ['id' => $id]))
+            ->action(route('subcategory.update', ['id' => $id]))
             ->method('POST')
             ->startRow()
             ->addFormFields([
@@ -167,27 +192,38 @@ class GlobalCategoryController extends Controller
             ->endRow()
             ->startRow()
             ->addInput([
+                'type' => 'select',
+                'name' => 'category_id',
+                'label' => 'Category',
+                'col' => 'col-md-12 mb-3',
+                'options' => $categories,
+                'value' => old('category_id', $data->category_id),
+                'required' => true,
+                'invalid_feedback' => 'Please select a valid category.',
+            ])
+            ->endRow()
+            ->startRow()
+            ->addInput([
                 'type' => 'submit',
-                'value' => 'Update Category',
+                'value' => 'Update Sub Category',
                 'col' => 'col-6 mb-3',
-                'icon' => 'ri-save-line',
                 'class' => 'btn btn-primary',
             ])
             ->endRow()
             ->build();
 
-        return view('backend.global_category.edit')->with([
-            'title' => 'Global Category Edit',
+        return view('backend.subcategory.edit')->with([
+            'title' => 'SubCategory Edit',
             'buttons' => [
                 [
                     'label' => 'Add New',
-                    'url' => route('global_category.index'),
+                    'url' => route('subcategory.index'),
                     'icon' => 'ri-add-line',
                     'classes' => 'btn-sm btn-outline-primary',
                 ],
                 [
                     'label' => 'Back to List',
-                    'url' => route('global_category.index'),
+                    'url' => route('subcategory.index'),
                     'icon' => 'ri-add-line',
                     'classes' => 'btn-sm btn-outline-danger',
                 ],
@@ -202,20 +238,20 @@ class GlobalCategoryController extends Controller
     public function update(Request $request, $id): RedirectResponse
     {
         $this->validate($request, [
-            'name' => 'required',
+            'name' => [
+                'required', Rule::unique((new SubCategory)->getTable())->ignore($id),
+            ],
             'position' => 'required|numeric|min:1',
+            'category_id' => 'required',
         ]);
 
-        // Adjust positions if the position is changing
-        $sliderImage = GlobalCategory::query()->findOrFail($id);// Get the current and new positions
+        $response = $this->service->update($id, $request->all());
 
+        if ($response) {
+            return redirect()->route('subcategory.index')->with('success', 'SubCategory updated successfully.');
+        }
 
-        $sliderImage->update([
-            'name' => $request->get('name'),
-            'position' => $request->get('position'),
-        ]);
-
-        return redirect()->route('global_category.index')->with('success', 'GlobalCategory updated successfully.');
+        return redirect()->back()->with('error', 'Something went wrong. Please try again.');
     }
 
     public function delete(Request $request): JsonResponse
@@ -224,14 +260,14 @@ class GlobalCategoryController extends Controller
 
         if ($data) {
             return response()->json([
-                'message' => 'GlobalCategory deleted successfully',
+                'message' => 'SubCategory deleted successfully',
                 'status_code' => ResponseAlias::HTTP_OK,
                 'data' => []
             ], ResponseAlias::HTTP_OK);
         }
 
         return response()->json([
-            'message' => 'GlobalCategory delete failed',
+            'message' => 'SubCategory delete failed',
             'status_code' => ResponseAlias::HTTP_BAD_REQUEST,
             'data' => []
         ], ResponseAlias::HTTP_BAD_REQUEST);
@@ -248,81 +284,23 @@ class GlobalCategoryController extends Controller
 
         return DataTables::of($data)
             ->filter(function ($query) {
-                if ($search = request('search.value')) {
-                    $query->where('name', 'like', "%{$search}%")
-                        ->orWhere('id', 'like', "%{$search}%")
-                        ->orWhere('position', 'like', "%{$search}%");
+                if (request()->has('name') && !is_null(request('name'))) {
+                    $query->where('name', 'like', '%' . request('name') . '%');
                 }
+            }, true)
+            ->addColumn('name', function ($data) {
+                return $data->name;
             })
-            ->addColumn('id', fn($data) => $data->id)
-            ->addColumn('name', fn($data) => $data->name)
-            ->addColumn('position', fn($data) => $data->position)
-
+            ->editColumn('status', function ($data) {
+                return $data->status;
+            })
             ->addColumn('action', function ($data) {
-                $editRoute = route('global_category.edit', $data->id);
-                $deleteRoute = null; // Replace with delete route if needed
-                return actionDropdown($data->id, $editRoute, null, $deleteRoute);
+                $editRoute = route('subcategory.edit', $data->id);
+                $viewRoute = route('subcategory.edit', $data->id); // Optional, replace with actual route if needed
+                $deleteRoute = null;
+                return actionDropdown($data->id, $editRoute, $viewRoute, $deleteRoute);
             })
-            ->rawColumns(['action', 'reason'])
+            ->rawColumns(['action'])
             ->toJson();
     }
-
-    public function list(Request $request)
-    {
-        $id = $request->get('id');
-
-        $query = GlobalCategory::with('subCategories');
-
-        if ($id) {
-            $query->where('id', $id);
-        }
-
-        $categories = $query->orderBy('position')->get();
-
-        // map category -> React style object
-        $mapped = $categories->map(function ($category, $index) {
-            return [
-                "id" => $category->id,
-                "icon" => $this->mapIcon($category->id), // dynamic icon mapping
-                "letter" => strtoupper(substr($category->name, 0, 1)), // প্রথম অক্ষর
-                "title" => $category->name,
-                "description" => $category->description,
-                "examples" => $category->subCategories->pluck('name')->toArray(), // sub_categories
-                "color" => $this->mapColor($index)["color"],
-                "bgColor" => $this->mapColor($index)["bgColor"],
-                "sub_category" => $category->subCategories,
-            ];
-        });
-
-        return response()->json([
-            "success" => true,
-            "data" => $mapped
-        ]);
-    }
-
-    private function mapColor($index): array
-    {
-        $colors = [
-            ["color" => "from-red-500 to-red-600", "bgColor" => "bg-red-50"],
-            ["color" => "from-orange-500 to-orange-600", "bgColor" => "bg-orange-50"],
-            ["color" => "from-yellow-500 to-yellow-600", "bgColor" => "bg-yellow-50"],
-            ["color" => "from-green-500 to-green-600", "bgColor" => "bg-green-50"],
-            ["color" => "from-blue-500 to-blue-600", "bgColor" => "bg-blue-50"],
-            ["color" => "from-indigo-500 to-indigo-600", "bgColor" => "bg-indigo-50"],
-            ["color" => "from-teal-500 to-teal-600", "bgColor" => "bg-teal-50"],
-            ["color" => "from-purple-500 to-purple-600", "bgColor" => "bg-purple-50"],
-            ["color" => "from-gray-500 to-gray-600", "bgColor" => "bg-gray-50"],
-        ];
-
-        return $colors[$index % count($colors)];
-    }
-
-    private function mapIcon($id): string
-    {
-        // এখানে আপনি চাইলে DB field অনুযায়ী বা ID অনুযায়ী icon return করতে পারেন
-        // আপাতত placeholder
-        return "Shield";
-    }
-
-
 }

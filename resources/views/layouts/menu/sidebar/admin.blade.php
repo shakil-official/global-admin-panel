@@ -32,15 +32,14 @@
                         <i data-feather="settings" class="icon-dual"></i>
                         <span data-key="t-dashboards">Setting</span>
                     </a>
-                    <div class="collapse menu-dropdown {{ request()->is(['global_category*', 'category*', 'global_sub_category*', 'slider*', 'feedback*', 'services*', 'springered*']) ? 'show' : '' }}" id="sidebarProductsSetting">
+                    <div class="collapse menu-dropdown {{ request()->is(['global_category*', 'service*','category*', 'global_sub_category*', 'slider*', 'feedback*', 'services*', 'springered*']) ? 'show' : '' }}" id="sidebarProductsSetting">
                         <ul class="nav nav-sm flex-column">
-
 
                             <li class="nav-item">
                                 <a href="{{ route('global_category.index') }}"
                                    class="nav-link {{ request()->routeIs('global_category.*') ? 'active' : '' }}"
                                    data-key="t-analytics">
-                                    Category
+                                    Service Type
                                 </a>
                             </li>
 

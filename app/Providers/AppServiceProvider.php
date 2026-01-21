@@ -21,6 +21,8 @@ use App\Engine\GlobalSubCategory\Services\GlobalSubCategoryService;
 use App\Engine\SliderImage\Services\Contracts\SliderImageServiceInterface;
 use App\Engine\SliderImage\Services\SliderImageService;
 
+use App\Engine\SubCategory\Services\Contracts\SubCategoryServiceInterface;
+use App\Engine\SubCategory\Services\SubCategoryService;
 use App\Engine\TermsAndCondition\Services\Contracts\TermsAndConditionServiceInterface;
 use App\Engine\TermsAndCondition\Services\TermsAndConditionService;
 use Illuminate\Support\ServiceProvider;
@@ -40,6 +42,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(GlobalCategoryServiceInterface::class, GlobalCategoryService::class);
         $this->app->bind(GlobalSubCategoryServiceInterface::class, GlobalSubCategoryService::class);
         $this->app->bind(FeedbackServiceInterface::class, FeedbackService::class);
+        $this->app->bind(SubCategoryServiceInterface::class, SubCategoryService::class);
     }
 
     /**

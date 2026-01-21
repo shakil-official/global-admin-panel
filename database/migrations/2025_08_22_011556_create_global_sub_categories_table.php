@@ -20,7 +20,6 @@ return new class extends Migration
             $table->integer('reason')->default(1);
             $table->longText('description')->nullable();
             $table->string('image')->nullable();
-            $table->string('icon')->nullable();
             $table->enum('status', ['active', 'inactive'])->default('active');
             $table->timestamps();
 

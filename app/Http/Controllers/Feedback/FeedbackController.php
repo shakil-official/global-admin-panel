@@ -43,7 +43,6 @@ class FeedbackController extends Controller
                 "Title",
                 "Name",
                 "Rating",
-
                 "Action"
             ],
         ]);
