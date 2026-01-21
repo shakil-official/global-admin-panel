@@ -91,13 +91,13 @@ class GlobalCategoryController extends Controller
             ->build();
 
         return view('backend.global_category.add')->with([
-            'title' => 'GlobalCategory Add',
+            'title' => 'Add',
             'buttons' => [
                 [
-                    'label' => 'Add New',
+                    'label' => 'Back',
                     'url' => route('global_category.index'),
-                    'icon' => 'ri-add-line',
-                    'classes' => 'btn-sm btn-outline-primary',
+                    'icon' => 'ri-corner-down-right-fill',
+                    'classes' => 'btn-sm btn-outline-danger',
                 ],
             ],
             'formConfig' => $formConfig
@@ -170,14 +170,14 @@ class GlobalCategoryController extends Controller
                 'type' => 'submit',
                 'value' => 'Update Category',
                 'col' => 'col-6 mb-3',
-                'icon' => 'ri-save-line',
-                'class' => 'btn btn-primary',
+                'icon' => 'ri-edit-line',
+                'class' => 'btn btn-sm btn-primary',
             ])
             ->endRow()
             ->build();
 
         return view('backend.global_category.edit')->with([
-            'title' => 'Global Category Edit',
+            'title' => 'Edit',
             'buttons' => [
                 [
                     'label' => 'Add New',
@@ -188,7 +188,7 @@ class GlobalCategoryController extends Controller
                 [
                     'label' => 'Back to List',
                     'url' => route('global_category.index'),
-                    'icon' => 'ri-add-line',
+                    'icon' => 'ri-corner-down-right-fill',
                     'classes' => 'btn-sm btn-outline-danger',
                 ],
             ],

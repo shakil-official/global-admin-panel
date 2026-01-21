@@ -9,10 +9,11 @@
 
     <div class="row">
         <div class="col-lg-12">
-            <div class="card">
+            <div class="card border border-light">
                 @if(count($buttons) > 0)
                     <div class="card-header d-flex align-items-center">
-                        <h5 class="card-title flex-grow-1 mb-0">{{ $title }}</h5>
+                        <span class="ribbon-three ribbon-three-primary"><span>{{ $title }}</span></span>
+                        <h5 class="card-title flex-grow-1 mb-0"></h5>
                         <div class="d-flex gap-1 flex-wrap">
                             @foreach($buttons as $addButton)
                                 <a href="{{ $addButton['url'] }}" type="button" class="btn  create-btn  {{ $addButton['classes'] }} }}">

@@ -8,7 +8,7 @@ use Illuminate\Support\Str;
 
 
 if (!function_exists('actionDropdown')) {
-    function actionDropdown($id, $editRoute, $viewRoute = null, $deleteRoute = null): string
+    function actionDropdown($id, $editRoute, $viewRoute = null): string
     {
         return '<div class="dropdown d-inline-block">
                     <button class="btn btn-soft-secondary btn-sm dropdown"

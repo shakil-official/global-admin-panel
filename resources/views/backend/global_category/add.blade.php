@@ -1,17 +1,19 @@
 @extends('layouts.main')
 
-@section('title', 'Global Category') <!-- Dynamic page title -->
-@section('breadcrumb-main', 'Global Category Page') <!-- Dynamic page main -->
-@section('breadcrumb-title', 'Global Category') <!-- Dynamic page title -->
+@section('title', 'Service Type Add') <!-- Dynamic page title -->
+@section('breadcrumb-main', 'Service Type') <!-- Dynamic page main -->
+@section('breadcrumb-title', 'Service') <!-- Dynamic page title -->
 @section('breadcrumb-sub-title', 'add') <!-- Dynamic breadcrumb sub title -->
 
 @section('content')
 
     <div class="row">
         <div class="col-lg-12">
-            <div class="card">
+            <div class="card border border-light">
                 @if(count($buttons) > 0)
                     <div class="card-header d-flex align-items-center">
+                        <span class="ribbon-three ribbon-three-primary"><span>{{ $title }}</span></span>
+                        <h5 class="card-title flex-grow-1 mb-0"></h5>
                         <div class="d-flex gap-1 flex-wrap">
                             @foreach($buttons as $addButton)
                                 <a href="{{ $addButton['url'] }}" type="button" class="btn create-btn {{ $addButton['classes'] }}">

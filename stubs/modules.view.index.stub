@@ -1,9 +1,9 @@
 @extends('layouts.main')
 
-@section('title', 'Service Type')
-@section('breadcrumb-main', 'Service type')
-@section('breadcrumb-title', 'Service')
-@section('breadcrumb-sub-title', 'type')
+@section('title', '{{Module}}')
+@section('breadcrumb-main', '{{Module}} list')
+@section('breadcrumb-title', '{{Module}}')
+@section('breadcrumb-sub-title', 'list')
 
 @push('styles')
     <link rel="stylesheet" href="{{ asset('theme/assets/libs/sweetalert2/sweetalert2.min.css') }}">
@@ -39,6 +39,7 @@
 
         <script>
 
+
             const tableId = "{{ $table }}"; // Table ID passed from the controller
             const columns = @json($columns); // Columns passed from the controller
 
@@ -58,7 +59,7 @@
                 lengthChange: true,
                 processing: true,
                 serverSide: true,
-                ajax: "{{ route('global_category.list') }}",
+                ajax: "{{ route('{{ moduleLower }}.list') }}",
                 columns: dataTableColumns,
                 language: {
                     lengthMenu: "_MENU_ ",
@@ -85,7 +86,7 @@
                 }).then((result) => {
                     if (result.isConfirmed) {
                         $.ajax({
-                            url: '{{ route('global_category.delete') }}', // Your Laravel route
+                            url: '{{ route('{{ moduleLower }}.delete') }}', // Your Laravel route
                             type: 'delete',
                             data: {
                                 _token: '{{ csrf_token() }}', // CSRF token

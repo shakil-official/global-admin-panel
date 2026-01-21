@@ -261,7 +261,8 @@ class GlobalSubCategoryController extends Controller
                 'type' => 'submit',
                 'value' => 'Update Global Sub Category',
                 'col' => 'col-6 mb-3',
-                'class' => 'btn btn-primary',
+                'icon' => 'ri-edit-line',
+                'class' => 'btn btn-sm btn-primary',
             ])
             ->endRow()
             ->build();

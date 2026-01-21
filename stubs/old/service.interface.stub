@@ -1,0 +1,10 @@
+<?php
+
+namespace App\Engine\{{modelName}}\Services\Contracts;
+
+use App\Engine\Base\Services\BaseServiceInterface;
+
+interface {{modelName}}ServiceInterface extends BaseServiceInterface
+{
+    // Add any custom methods specific to the {{modelName}} service
+}

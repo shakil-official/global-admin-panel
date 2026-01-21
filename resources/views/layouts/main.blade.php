@@ -33,7 +33,7 @@
     <link href="{{ asset('theme/assets/css/custom.min.css') }}" rel="stylesheet" type="text/css"/>
 
     <!-- Vite CSS -->
-{{--    @vite(['resources/css/app.css'])--}}
+    {{--    @vite(['resources/css/app.css'])--}}
 
     @stack('styles')
 </head>
@@ -43,7 +43,6 @@
 <div id="layout-wrapper">
     @include('layouts.menu.top.page-topbar')
     @include('layouts.menu.top.remove-notification-modal')
-
 
     <!-- ========== App Menu ========== -->
     @include('layouts.menu.sidebar.main')
@@ -62,7 +61,8 @@
                 @include('layouts.start-page')
                 <!-- end page title -->
 
-                @if ($errors->any())
+                @if (isset($errors) && $errors->any())
+
                     <div class="alert alert-danger">
                         <strong>Whoops!</strong> There were some problems with your input.<br><br>
                         <ul>
@@ -83,9 +83,6 @@
     <!-- end main content-->
 </div>
 <!-- END layout-wrapper -->
-
-
-
 
 
 <!--start back-to-top-->
