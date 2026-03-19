@@ -1,0 +1,17 @@
+{
+  "Rollup HTML Asset": {
+    "file": "index.html",
+    "src": "Rollup HTML Asset"
+  },
+  "resources/css/app.css": {
+    "file": "app-xgLFWedx.css",
+    "src": "resources/css/app.css",
+    "isEntry": true
+  },
+  "resources/js/app.jsx": {
+    "file": "app-CsR64Xb7.js",
+    "name": "app",
+    "src": "resources/js/app.jsx",
+    "isEntry": true
+  }
+}
