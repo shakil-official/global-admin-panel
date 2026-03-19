@@ -47,4 +47,9 @@ class BaseRepository implements BaseRepositoryInterface
     {
         return $this->model::query()->whereNotNull('created_at');
     }
+
+    public function getModel()
+    {
+        return $this->model::query();
+    }
 }

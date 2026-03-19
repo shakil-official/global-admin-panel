@@ -15,6 +15,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\Response as ResponseAlias;
@@ -43,9 +44,11 @@ class {{ module }}Controller extends Controller
             ],
             'table' => '{{ moduleLower }}_table',
             'columns' => [
-                "Name",
-                "Status",
-                "Action"
+                    "Image",
+                    "Title",
+                    "Slug",
+                    "Status",
+                    "Action"
             ],
         ]);
     }
@@ -54,45 +57,128 @@ class {{ module }}Controller extends Controller
     {
         $formConfig = (new FormMaking())
                     ->action(route('{{ moduleLower }}.store'))
+                    ->enctype('multipart/form-data')
                     ->method('POST')
-                    ->startRow()
-                    ->addFormFields([
-                        [
-                            'type' => 'text',
-                            'name' => 'name',
-                            'label' => 'Name',
-                            'col' => 'col-md-12 mb-3',
-                            'value' => '',
-                            'required' => true,
-                            'validation_feedback' => 'Looks good!',
-                        ]
-                    ])
-                    ->endRow()
-                    ->startRow()
-                    ->addFormFields([
-                        [
-                            'type' => 'radio',
-                            'name' => 'status',
-                            'label' => 'Select status',
-                            'options' => [
-                                ['value' => 'active', 'label' => 'Active', 'checked' => 'active'],
-                                ['value' => 'inactive', 'label' => 'Inactive', 'checked' => ''],
+                    // Title
+                      ->startRow()
+                      ->addFormFields([
+                          [
+                              'type' => 'text',
+                              'name' => 'title',
+                              'label' => '{{ module }} Title',
+                              'value' => old('title'),
+                              'col' => 'col-md-12 mb-3',
+                              'required' => true,
+                          ]
+                      ])
+                      ->endRow()
+
+
+                     // Short Description
+                        ->startRow()
+                        ->addFormFields([
+                            [
+                                'type' => 'textarea',
+                                'name' => 'short_description',
+                                'label' => 'Short Description',
+                                'col' => 'col-md-12 mb-3',
+                                'required' => true,
+                                'value' => old('short_description')
                             ],
-                            'col' => 'col-6 mb-3',
-                            'required' => true,
-                            'invalid_feedback' => 'More example invalid feedback text',
-                        ],
-                    ])
-                    ->endRow()
-                    ->startRow()
-                    ->addInput([
-                        'type' => 'submit',
-                        'value' => 'Submit form',
-                        'icon' => 'ri-add-line',
-                         'class' => 'btn btn-sm btn-primary',
-                    ])
-                    ->endRow()
-                    ->build();
+                        ])
+                        ->endRow()
+
+                        // Description
+                        ->startRow()
+                        ->addFormFields([
+                            [
+                                'type' => 'custom',
+                                'name' => 'description',
+                                'value' => old('description'),
+                                'col' => 'col-md-12 mb-3',
+                                'callback' => function ($input) {
+                                    $value = htmlspecialchars($input['value'], ENT_QUOTES, 'UTF-8'); // Escape value for safety
+
+                                    return "<div class=\"form-group\">
+                                            <label for=\"{$input['name']}\">Description</label>
+                                            <div class=\"snow-editor\"  data-name=\"{$input['name']}\" style=\"height: 300px;\">$value</div>
+                                            <input type=\"hidden\" name=\"{$input['name']}\" id=\"{$input['name']}\" value=\"$value\">
+                                               </div>
+                                        ";
+                                }
+
+                            ]
+                        ])
+                        ->endRow()
+
+
+                        ->startRow()
+                         ->addFormFields([
+                            [
+                                'type' => 'select_advance',
+                                'name' => 'type',
+                                'label' => 'Type',
+                                'options' => [
+                                    ['value' => 'upstream', 'label' => 'Upstream'],
+                                ],
+                                'col' => 'col-md-6 mb-3',
+                                'required' => true,
+                            ],
+                        ])
+                        ->endRow()
+
+
+
+                      ->startRow()
+                      ->addFormFields([
+                          [
+                              'type' => 'file',
+                              'name' => 'image',
+                              'label' => '{{ module }} Image',
+                              'col' => 'col-md-12 mb-3',
+                              'required' => true,
+                              'help' => 'Leave empty to keep existing image',
+                          ]
+                      ])
+                      ->endRow()
+
+                      // Status
+                      ->startRow()
+                      ->addFormFields([
+                          [
+                              'type' => 'radio',
+                              'name' => 'status',
+                              'label' => 'Select status',
+                              'options' => [
+                                  [
+                                      'value' => 'active',
+                                      'label' => 'Active',
+                                      'checked' => 'active'
+                                  ],
+                                  [
+                                      'value' => 'inactive',
+                                      'label' => 'Inactive',
+                                      'checked' => ''
+                                  ],
+                              ],
+                              'col' => 'col-6 mb-3',
+                              'required' => true,
+                              'invalid_feedback' => 'More example invalid feedback text'
+                          ]
+                      ])
+                      ->endRow()
+
+                      // Submit
+                      ->startRow()
+                      ->addInput([
+                          'type' => 'submit',
+                          'value' => 'Add {{ module }}',
+                          'icon' => 'ri-save-line',
+                          'class' => 'btn btn-sm btn-primary',
+                          'col' => 'col-12 mb-3',
+                      ])
+                      ->endRow()
+                      ->build();
 
         return view('{{Module}}::{{ moduleLower }}.add')
         ->with([
@@ -113,11 +199,36 @@ class {{ module }}Controller extends Controller
     public function store(Request $request): RedirectResponse
     {
         $this->validate($request, [
-            'name' => 'required|unique:{{ moduleLower }}s,name',
-            'status' => 'required',
+            'title' => 'required|unique:{{ moduleLower }}s,title',
+            'image' => 'required|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'short_description' => 'required|max:300',
+            'description' => 'required|string',
+            'status' => 'required|in:active,inactive',
+            'type' => 'required|in:upstream',
         ]);
 
-        $response = $this->service->create($request->all());
+         $data = $request->only(['title', 'slug', 'description', 'status', 'short_description', 'type']);
+
+        if ($request->hasFile('image')) {
+
+             $uploadPath = public_path('uploads/offers');
+
+             if (!File::exists($uploadPath)) {
+                 File::makeDirectory($uploadPath, 0755, true);
+             }
+
+             $file = $request->file('image');
+             $fileName = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+
+             $file->move($uploadPath, $fileName);
+
+             // Save relative path
+             $data['image'] = 'uploads/offers/' . $fileName;
+         }
+
+         $data['user_id'] =  auth()->user()->id;
+
+         $response = $this->service->create($data);
 
         if ($response) {
             return redirect()->route('{{ moduleLower }}.index')
@@ -133,35 +244,119 @@ class {{ module }}Controller extends Controller
 
               $formConfig = (new FormMaking())
                   ->action(route('{{ moduleLower }}.update', ['id' => $id]))
+                  ->enctype('multipart/form-data')
                   ->method('POST')
-                  ->startRow()
-                  ->addFormFields([
-                      [
-                          'type' => 'text',
-                          'name' => 'name',
-                          'label' => 'Name',
-                          'col' => 'col-md-6 mb-3',
-                          'value' => $data->name,
-                          'required' => true,
-                          'validation_feedback' => 'Looks good!',
-                      ]
-                  ])
-                  ->endRow()
-                  ->startRow()
-                  ->addFormFields([
-                      [
-                          'type' => 'radio',
-                          'name' => 'status',
-                          'label' => 'Select status',
-                          'options' => [
-                              ['value' => 'active', 'label' => 'Active', 'checked' => $data->status === 'active'],
-                              ['value' => 'inactive', 'label' => 'Inactive', 'checked' => $data->status === 'inactive'],
-                          ],
-                          'col' => 'col-6 mb-3',
-                          'required' => true,
-                      ],
-                  ])
-                  ->endRow()
+
+                    // Title
+                    ->startRow()
+                    ->addFormFields([
+                        [
+                            'type' => 'text',
+                            'name' => 'title',
+                            'label' => '{{ module }} Title',
+                            'value' => old('title', $data->title),
+                            'col' => 'col-md-12 mb-3',
+                            'required' => true,
+                        ]
+                    ])
+                    ->endRow()
+
+                     // Short Description
+                     ->startRow()
+                     ->addFormFields([
+                         [
+                             'type' => 'textarea',
+                             'name' => 'short_description',
+                             'label' => 'Short Description',
+                             'col' => 'col-md-12 mb-3',
+                             'required' => true,
+                             'value' => old('short_description', $data->short_description)
+                         ],
+                     ])
+                     ->endRow()
+
+                     // Description
+                     ->startRow()
+                     ->addFormFields([
+                         [
+                             'type' => 'custom',
+                             'name' => 'description',
+                             'value' => old('description', $data->description),
+                             'col' => 'col-md-12 mb-3',
+                             'callback' => function ($input) {
+                                 $value = htmlspecialchars($input['value'], ENT_QUOTES, 'UTF-8'); // Escape value for safety
+
+                                 return "<div class=\"form-group\">
+                                         <label for=\"{$input['name']}\">Description</label>
+                                         <div class=\"snow-editor\"  data-name=\"{$input['name']}\" style=\"height: 300px;\">$value</div>
+                                         <input type=\"hidden\" name=\"{$input['name']}\" id=\"{$input['name']}\" value=\"$value\">
+                                            </div>
+                                     ";
+                             }
+
+                         ]
+                     ])
+                     ->endRow()
+
+
+
+
+                    ->startRow()
+                   ->addFormFields([
+                        [
+                            'type' => 'select_advance',
+                            'name' => 'type',
+                            'label' => 'Type',
+                            'options' => [
+                                ['value' => 'upstream', 'label' => 'Upstream'],
+                            ],
+                            'col' => 'col-md-6 mb-3',
+                            'required' => true,
+                            'value' => $data->type
+                        ],
+                    ])
+                    ->endRow()
+
+
+                    // Image (optional on edit)
+                    ->startRow()
+                    ->addFormFields([
+                        [
+                            'type' => 'file',
+                            'name' => 'image',
+                            'label' => '{{ module }} Image',
+                            'col' => 'col-md-12 mb-3',
+                            'required' => false,
+                            'help' => 'Leave empty to keep existing image',
+                        ]
+                    ])
+                    ->endRow()
+
+                    // Status
+                    ->startRow()
+                    ->addFormFields([
+                        [
+                            'type' => 'radio',
+                            'name' => 'status',
+                            'label' => 'Status',
+                            'options' => [
+                                [
+                                    'value' => 'active',
+                                    'label' => 'Active',
+                                    'checked' => $data->status === 'active',
+                                ],
+                                [
+                                    'value' => 'inactive',
+                                    'label' => 'Inactive',
+                                    'checked' => $data->status === 'inactive',
+                                ],
+                            ],
+                            'col' => 'col-md-6 mb-3',
+                            'required' => true,
+                        ],
+                    ])
+                    ->endRow()
+
                   ->startRow()
                   ->addInput([
                       'type' => 'submit',
@@ -197,14 +392,50 @@ class {{ module }}Controller extends Controller
     public function update(Request $request, $id): RedirectResponse
     {
         $this->validate($request, [
-            'name' => [
+            'title' => [
                 'required',
                 Rule::unique((new {{ module }})->getTable())->ignore($id),
             ],
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'short_description' => 'required|max:300',
+            'description' => 'required|string',
             'status' => 'required|in:active,inactive',
+            'type' => 'required|in:upstream',
         ]);
 
-        $response = $this->service->update($id, $request->all());
+         $data = $this->service->find($id);
+
+                if (!$data) {
+                    return redirect()->back()->with('error', 'Offer not found.');
+                }
+
+                 $data = $request->only(['title', 'slug', 'description', 'status', 'short_description', 'type']);
+
+                if ($request->hasFile('image')) {
+
+                    $uploadPath = public_path('uploads/offers');
+
+                    if (!File::exists($uploadPath)) {
+                        File::makeDirectory($uploadPath, 0755, true);
+                    }
+
+                    // Remove old image
+                    if ($data->image && File::exists(public_path($data->image))) {
+                        File::delete(public_path($data->image));
+                    }
+
+                    $file = $request->file('image');
+                    $fileName = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+                    $file->move($uploadPath, $fileName);
+
+                    $data['image'] = 'uploads/offers/' . $fileName;
+                }
+
+                 $data['user_id'] =  auth()->user()->id;
+
+                $response = $this->service->update($id, $data);
+
+
 
         if ($response) {
             return redirect()->route('{{ moduleLower }}.index')
@@ -229,12 +460,18 @@ class {{ module }}Controller extends Controller
         $data = $this->service->dataTableData()->orderBy('id', 'desc');
 
         return DataTables::of($data)
+            ->addColumn('image', function ($data) {
+                $imagePath = isset($data->image) ? asset($data->image) : null; // Generate the URL or leave it null
+                return $imagePath
+                    ? '<img src="' . $imagePath . '" alt="Product Image" style="width: 50px; height: 50px; object-fit: cover;">'
+                    : 'No Image'; // Return image tag or fallback text
+            })
             ->addColumn('action', function ($data) {
                 $editRoute = route('{{ moduleLower }}.edit', $data->id);
                 $viewRoute = null; // optional
                 return actionDropdown($data->id, $editRoute, $viewRoute);
             })
-            ->rawColumns(['action'])
+            ->rawColumns(['action', 'image'])
             ->toJson();
     }
 }

@@ -1,8 +1,8 @@
 @extends('layouts.main')
 
-@section('title', 'About')
-@section('breadcrumb-main', 'About Page')
-@section('breadcrumb-title', 'About')
+@section('title', 'Privacy Policy')
+@section('breadcrumb-main', 'Privacy Policy Page')
+@section('breadcrumb-title', 'Privacy Policy')
 @section('breadcrumb-sub-title', 'edit')
 
 @section('content')

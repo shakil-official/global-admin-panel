@@ -32,7 +32,7 @@ class TermsAndConditionController extends Controller
         $data = $this->service->find(1);
 
         $formConfig = (new FormMaking())
-            ->action(route('section.term..update', ['id' => 1]))
+            ->action(route('section.term.update', ['id' => 1]))
             ->method('POST')
             ->startRow()
             ->addFormFields([
@@ -61,16 +61,14 @@ class TermsAndConditionController extends Controller
                 'type' => 'submit',
                 'value' => 'Update',
                 'col' => 'col-6 mb-3',
-                'class' => 'btn btn-primary',
+                'class' => 'btn btn-sm btn-primary',
             ])
             ->endRow()
             ->build();
 
         return view('backend.terms_and_condition.edit')->with([
             'title' => 'Terms & Condition Edit',
-            'buttons' => [
-
-            ],
+            'buttons' => [],
             'formConfig' => $formConfig,
         ]);
     }
@@ -87,7 +85,7 @@ class TermsAndConditionController extends Controller
         $response = $this->service->update($id, $request->all());
 
         if ($response) {
-            return redirect()->route('section.term.edit')->with('success', 'Terms And Condition updated successfully.');
+            return redirect()->route('section_term.edit')->with('success', 'Terms And Condition updated successfully.');
         }
 
         return redirect()->back()->with('error', 'Something went wrong. Please try again.');

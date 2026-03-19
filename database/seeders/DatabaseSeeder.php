@@ -16,6 +16,11 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             AboutSeeder::class,
             TermAndConditionSeeder::class,
+            ServiceSeeder::class,
+            PackageSeeder::class,
+            FaqCategorySeeder::class,
+            FaqSeeder::class,
+            SliderSeeder::class,
         ]);
     }
 }

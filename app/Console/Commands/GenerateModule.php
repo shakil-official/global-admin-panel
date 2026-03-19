@@ -164,9 +164,10 @@ PHP
 use Illuminate\Support\Facades\Route;
 use {$controllerClassApi};
 
-Route::prefix('v1')
+Route::middleware('api')
+    ->prefix('api/v1')
     ->as('api_{$lower}.')
-    ->middleware('auth:sanctum')
+//    ->middleware('auth:sanctum')
     ->group(function () {
         Route::apiResource('{$lower}', {$name}ApiController::class);
     });
@@ -204,7 +205,7 @@ class {$name}ServiceProvider extends ServiceProvider
         \$this->loadRoutesFrom(__DIR__.'/routes/api.php');
 
         // Load views
-        \$this->loadViewsFrom(__DIR__.'/resources/views', 'Product');
+        \$this->loadViewsFrom(__DIR__.'/resources/views', '{$name}');
 
         // Load migrations
         \$this->loadMigrationsFrom(__DIR__.'/database/migrations');
@@ -224,10 +225,62 @@ PHP
 namespace Modules\\{$name}\\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Str;
 
 class {$name} extends Model
 {
-    protected \$guarded = [];
+     protected \$fillable = [
+        'title',
+        'slug',
+        'image',
+        'short_description',
+        'description',
+        'type',
+        'status',
+    ];
+
+    protected static function booted(): void
+    {
+        static::creating(function (\$data) {
+            if (empty(\$data->slug)) {
+                \$data->slug = static::generateUniqueSlug(\$data->title);
+            }
+        });
+
+        static::updating(function (\$data) {
+            if (\$data->isDirty('title')) {
+                \$data->slug = static::generateUniqueSlug(
+                    \$data->title,
+                    \$data->id
+                );
+            }
+        });
+
+        static::deleting(function (\$data) {
+            if (\$data->image && File::exists(public_path(\$data->image))) {
+                File::delete(public_path(\$data->image));
+            }
+        });
+
+    }
+
+    protected static function generateUniqueSlug(string \$title, ?int \$ignoreId = null): string
+    {
+        \$slug = Str::slug(\$title);
+        \$originalSlug = \$slug;
+        \$count = 1;
+
+        while (
+        static::where('slug', \$slug)
+            ->when(\$ignoreId, fn(\$q) => \$q->where('id', '!=', \$ignoreId))
+            ->exists()
+        ) {
+            \$slug = \$originalSlug . '-' . \$count++;
+        }
+
+        return \$slug;
+    }
 }
 PHP;
     }
@@ -251,7 +304,14 @@ return new class extends Migration {
     {
         Schema::create('{$table}', function (Blueprint \$table) {
             \$table->id();
-            \$table->string('name');
+            \$table->string('title');
+            \$table->string('slug');
+            \$table->string('image');
+            \$table->unsignedBigInteger('user_id')->nullable(); // Make nullable for onDelete('set null')
+            \$table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
+            \$table->tinyText('short_description');
+            \$table->text('description');
+            \$table->enum('type', ['upstream']);
             \$table->enum('status', ['active', 'inactive'])->default('active');
             \$table->timestamps();
         });

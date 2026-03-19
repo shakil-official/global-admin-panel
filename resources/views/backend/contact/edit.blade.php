@@ -39,29 +39,18 @@
                         </div>
 
                         <div class="col-md-2">
-                            <label class="fw-bold">Company:</label>
-                            <p class="text-muted">{{ $data->company ?? '-' }}</p>
+                            <label class="fw-bold">Area:</label>
+                            <p class="text-muted">{{ $data->area ?? '-' }}</p>
                         </div>
 
-                        <div class="col-md-2">
-                            <label class="fw-bold">Country:</label>
-                            <p class="text-muted">{{ strtoupper($data->country ?? '-') }}</p>
-                        </div>
 
-                        <div class="col-md-2">
-                            <label class="fw-bold">Role:</label>
-                            <p class="text-muted">{{ $data->role ?? '-' }}</p>
-                        </div>
 
                         <div class="col-md-2">
                             <label class="fw-bold">Created At:</label>
                             <p class="text-muted">{{ $data->created_at->format('d M, Y h:i A') }}</p>
                         </div>
 
-                        <div class="col-md-12">
-                            <label class="fw-bold">Address:</label>
-                            <p class="text-muted">{{ $data->address ?? '-' }}</p>
-                        </div>
+
 
                         <div class="col-md-12">
                             <label class="fw-bold">Message:</label>

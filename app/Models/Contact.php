@@ -13,12 +13,10 @@ class Contact extends Model
         'name',
         'email',
         'phone',
+        'area',
         'address',
         'description',
-        'status',
-        'role' ,
-        'company' ,
-        'country' ,
+        'status'
     ];
 
 }

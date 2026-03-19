@@ -34,6 +34,7 @@ class ContactController extends Controller
             'columns' => [
                 "Name",
                 'Email',
+                'Area',
                 'Phone',
                 'Message',
                 'Status',

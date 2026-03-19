@@ -227,3 +227,29 @@ if (!function_exists('actionDropdownStatus')) {
 
     }
 }
+
+
+
+if (!function_exists('badge')) {
+    function badge($value, $status): string
+    {
+        $badges = [
+            'primary' => '<span class="badge bg-primary-subtle text-primary">' . $value . '</span>',
+            'secondary' => '<span class="badge bg-secondary-subtle text-secondary">' . $value . '</span>',
+            'success' => '<span class="badge bg-success-subtle text-success">' . $value . '</span>',
+            'danger' => '<span class="badge bg-danger-subtle text-danger">' . $value . '</span>',
+            'warning' => '<span class="badge bg-warning-subtle text-warning">' . $value . '</span>',
+            'info' => '<span class="badge bg-info-subtle text-info">' . $value . '</span>',
+            'light' => '<span class="badge bg-light-subtle text-dark">' . $value . '</span>',
+            'dark' => '<span class="badge bg-dark-subtle text-white">' . $value . '</span>',
+            'active' => '<span class="badge bg-success-subtle text-success">' . $value . '</span>',
+            'inactive' => '<span class="badge bg-danger-subtle text-danger">' . $value . '</span>',
+            'pending' => '<span class="badge bg-warning-subtle text-warning">' . $value . '</span>',
+            'premium' => '<span class="badge bg-warning-subtle text-warning">' . $value . '</span>',
+            'specialized' => '<span class="badge bg-info-subtle text-info">' . $value . '</span>',
+            'value_added' => '<span class="badge bg-primary-subtle text-primary">' . $value . '</span>',
+        ];
+
+        return $badges[strtolower($status)] ?? '<span class="badge bg-secondary-subtle text-secondary">' . $value . '</span>';
+    }
+}

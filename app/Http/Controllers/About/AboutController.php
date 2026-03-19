@@ -27,7 +27,6 @@ class AboutController extends Controller
 
     public function edit(): View|Application|Factory|\Illuminate\Contracts\Foundation\Application
     {
-
         $data = $this->service->find(1);
 
         $formConfig = (new FormMaking())
@@ -70,9 +69,9 @@ class AboutController extends Controller
             ->startRow()
             ->addInput([
                 'type' => 'submit',
-                'value' => 'Update About',
+                'value' => 'Update Privacy Policy',
                 'col' => 'col-6 mb-3',
-                'class' => 'btn btn-primary',
+                'class' => 'btn btn-sm btn-primary',
             ])
             ->endRow()
             ->build();

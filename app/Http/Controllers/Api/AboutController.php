@@ -7,7 +7,6 @@ use App\Models\About;
 use App\Models\Contact;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use App\Mail\ReachOutMail;
 use Illuminate\Mail\Mailables\Address;
 use Illuminate\Support\Facades\Mail;
 
@@ -36,9 +35,7 @@ class AboutController extends Controller
             'name' => 'required|string|max:255',
             'phone' => 'required_without:email|nullable|string|max:15',
             'address' => 'nullable|string|max:255',
-            'role' => 'nullable|string|max:255',
-            'company' => 'nullable|string|max:255',
-            'country' => 'nullable|string|max:255',
+            'area' => 'nullable|string|max:255',
             'description' => 'required|string|max:1000',
         ], [
             'description.required' => 'Message is required.',
@@ -51,11 +48,7 @@ class AboutController extends Controller
             // Create the contact
             Contact::query()->create($validatedData);
 
-            $mail = Mail::to(new Address($validatedData['email'], $validatedData['name']))
-                ->cc(new Address('information@groupresilience.com', 'Information'))
-                ->send(new ReachOutMail($validatedData['name']));
 
-            // Return a success response
             return response()->json([
                 'success' => true,
                 'message' => 'Message sent.',
