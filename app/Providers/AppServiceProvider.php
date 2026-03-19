@@ -20,6 +20,7 @@ use App\Engine\SubCategory\Services\Contracts\SubCategoryServiceInterface;
 use App\Engine\SubCategory\Services\SubCategoryService;
 use App\Engine\TermsAndCondition\Services\Contracts\TermsAndConditionServiceInterface;
 use App\Engine\TermsAndCondition\Services\TermsAndConditionService;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\File;
 
@@ -61,6 +62,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        if (config('app.env') !== 'local') {
+            URL::forceScheme('https');
+        }
     }
 }
