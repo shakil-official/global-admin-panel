@@ -59,7 +59,7 @@
                 lengthChange: true,
                 processing: true,
                 serverSide: true,
-                ajax: "{{ route('faq-category.list') }}",
+                ajax: "{{ route('faqcategory.list') }}",
                 columns: dataTableColumns,
                 language: {
                     lengthMenu: "_MENU_ ",
@@ -86,7 +86,7 @@
                 }).then((result) => {
                     if (result.isConfirmed) {
                         $.ajax({
-                            url: '{{ route('faq-category.delete') }}', // Your Laravel route
+                            url: '{{ route('faqcategory.delete') }}', // Your Laravel route
                             type: 'delete',
                             data: {
                                 _token: '{{ csrf_token() }}', // CSRF token

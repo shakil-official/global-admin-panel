@@ -34,7 +34,7 @@ class NetworkPartnerController extends Controller
             'buttons' => [
                 [
                     'label' => 'Add New Item',
-                    'url' => route('network-partner.add'),
+                    'url' => route('networkpartner.add'),
                     'icon' => 'ri-add-line',
                     'classes' => 'btn-sm btn-outline-primary',
                 ],
@@ -52,7 +52,7 @@ class NetworkPartnerController extends Controller
     public function add(): Factory|Application|View|\Illuminate\Contracts\Foundation\Application
     {
         $formConfig = (new FormMaking())
-            ->action(route('network-partner.store'))
+            ->action(route('networkpartner.store'))
             ->enctype('multipart/form-data')
             ->method('POST')
             // Name
@@ -206,7 +206,7 @@ class NetworkPartnerController extends Controller
         $networkPartner = $this->service->find($id);
 
         $formConfig = (new FormMaking())
-            ->action(route('network-partner.update', ['id' => $id]))
+            ->action(route('networkpartner.update', ['id' => $id]))
             ->enctype('multipart/form-data')
             ->method('POST')
             // Name
@@ -295,7 +295,7 @@ class NetworkPartnerController extends Controller
             'buttons' => [
                 [
                     'label' => 'Add New',
-                    'url' => route('network-partner.add'),
+                    'url' => route('networkpartner.add'),
                     'icon' => 'ri-add-line',
                     'classes' => 'btn-sm btn-outline-primary',
                 ],
@@ -403,7 +403,7 @@ class NetworkPartnerController extends Controller
                     : 'No Image'; // Return image tag or fallback text
             })
             ->addColumn('action', function ($data) {
-                $editRoute = route('network-partner.edit', $data->id);
+                $editRoute = route('networkpartner.edit', $data->id);
                 $viewRoute = null; // optional
                 return actionDropdown($data->id, $editRoute, $viewRoute);
             })

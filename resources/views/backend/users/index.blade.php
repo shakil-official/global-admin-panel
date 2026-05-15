@@ -1,4 +1,4 @@
-@extends('layouts.main')
+@extends('admin.layouts.main')
 
 @section('title', $title)
 @section('breadcrumb-main', $title_main)
@@ -94,32 +94,69 @@
                         type: 'delete',
                         data: {
                             _token: '{{ csrf_token() }}', // CSRF token
-                                id: $(this).data('id') // Pass necessary data
-                            },
-                            success: function (response) {
-                                Swal.fire({
-                                    title: "Deleted!",
-                                    text: "Your data has been deleted.",
-                                    icon: "success"
-                                });
+                            id: $(this).data('id') // Pass necessary data
+                        },
+                        success: function (response) {
+                            Swal.fire({
+                                title: "Deleted!",
+                                text: "Your data has been deleted.",
+                                icon: "success"
+                            });
 
-                                $('#' + tableId).DataTable().ajax.reload();
+                            $('#' + tableId).DataTable().ajax.reload();
 
-                            },
-                            error: function (xhr) {
-                                Swal.fire({
-                                    title: "Error!",
-                                    text: "Something went wrong. Please try again.",
-                                    icon: "error"
-                                });
-                            }
-                        });
-                    }
-                });
+                        },
+                        error: function (xhr) {
+                            Swal.fire({
+                                title: "Error!",
+                                text: "Something went wrong. Please try again.",
+                                icon: "error"
+                            });
+                        }
+                    });
+                }
             });
+        });
+
+        // Function to handle delete confirmation
+        function confirmDelete(url) {
+            Swal.fire({
+                title: "Are you sure?",
+                text: "You won't be able to revert this!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, delete it!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: url,
+                        type: 'delete',
+                        data: {
+                            _token: '{{ csrf_token() }}'
+                        },
+                        success: function (response) {
+                            Swal.fire({
+                                title: "Deleted!",
+                                text: "User has been deleted.",
+                                icon: "success"
+                            });
+                            $('#' + tableId).DataTable().ajax.reload();
+                        },
+                        error: function (xhr) {
+                            Swal.fire({
+                                title: "Error!",
+                                text: "Something went wrong. Please try again.",
+                                icon: "error"
+                            });
+                        }
+                    });
+                }
+            });
+        }
 
 
-        </script>
-
+    </script>
 
 @endpush

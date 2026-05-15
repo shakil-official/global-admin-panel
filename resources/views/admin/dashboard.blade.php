@@ -1,4 +1,4 @@
-@extends('layouts.main')  <!-- Extends the base layout -->
+@extends('admin.layouts.main')  <!-- Extends the base layout -->
 
 @section('title', 'Super Dashboard')  <!-- Dynamic page title -->
 @section('breadcrumb-main', 'Dashboard')  <!-- Dynamic page main -->

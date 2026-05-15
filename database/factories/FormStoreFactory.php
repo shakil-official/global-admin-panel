@@ -2,12 +2,12 @@
 
 namespace Database\Factories;
 
-use App\Models\GlobalCategory;
+use App\Models\FormStore;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class GlobalCategoryFactory extends Factory
+class FormStoreFactory extends Factory
 {
-    protected $model = GlobalCategory::class;
+    protected $model = FormStore::class;
 
     public function definition(): array
     {

@@ -53,6 +53,20 @@ class AdminController extends Controller
 
     public function add(): Factory|Application|View|\Illuminate\Contracts\Foundation\Application
     {
+        // Get available roles for the dropdown
+        $rolesQuery = Role::query();
+        
+        // Add owner_id filter only if column exists
+        try {
+            if (\Schema::hasColumn('roles', 'owner_id')) {
+                $rolesQuery->where(['owner_id' => owner_id()]);
+            }
+        } catch (\Exception $e) {
+            // Column doesn't exist, continue without filter
+        }
+        
+        $roles = $rolesQuery->get();
+
         $formConfig = (new FormMaking())
             ->action(route('super-admin.user.store'))
             ->method('POST')
@@ -97,6 +111,26 @@ class AdminController extends Controller
                 ]
             ])
             ->endRow()
+            
+            ->startRow()
+            ->addFormFields([
+                [
+                    'type' => 'select',
+                    'name' => 'role_id',
+                    'label' => 'Assign Role',
+                    'col' => 'col-md-12 mb-3',
+                    'options' => ['' => 'Select Role'] + $roles->pluck('name', 'id')->toArray(),
+                    'multiple' => false,
+                    'required' => false,
+                    'validation_feedback' => 'Select a role for the user',
+                    'attributes' => [
+                        'data-placeholder' => 'Select role...',
+                        'class' => 'form-select'
+                    ]
+                ]
+            ])
+            ->endRow()
+            
             ->startRow()
             ->addFormFields([
                 [
@@ -148,7 +182,9 @@ class AdminController extends Controller
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
-            'password' => 'required|string|min:8', // Optional: add 'confirmed' to require password confirmation
+            'password' => 'required|string|min:8',
+            'status' => 'required|in:active,inactive',
+            'role_id' => 'nullable|exists:roles,id',
         ]);
 
         // Create the new user
@@ -156,10 +192,14 @@ class AdminController extends Controller
             'name' => $validatedData['name'],
             'email' => $validatedData['email'],
             'password' => Hash::make($validatedData['password']),
+            'status' => $validatedData['status'],
         ]);
 
         if ($user) {
-            $this->roleAssign($user->id);
+            // Assign single role if selected
+            if (!empty($validatedData['role_id'])) {
+                $user->roles()->sync([$validatedData['role_id']]);
+            }
         }
 
         // Redirect to a success page or back to the form with a success message
@@ -206,7 +246,24 @@ class AdminController extends Controller
             })
             ->addColumn('action', function ($row) {
                 $deleteRoute = route('super-admin.user.delete', $row->id);
-                return actionDropdownWithOutEdit($row->id, $deleteRoute);
+                $assignRoute = route('user.assign-role-edit', $row->id);
+                
+                $actions = '<div class="dropdown">
+                    <button class="btn btn-sm btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                        Action <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="' . $assignRoute . '">
+                            <i class="ri-user-settings-line me-1"></i> Assign Role
+                        </a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-danger" href="#" onclick="confirmDelete(\'' . $deleteRoute . '\')">
+                            <i class="ri-delete-bin-line me-1"></i> Delete
+                        </a></li>
+                    </ul>
+                </div>';
+                
+                return $actions;
             })
             ->rawColumns(['name', 'status', 'action']) // Allow HTML in the 'action' column
             ->toJson();

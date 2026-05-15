@@ -4,6 +4,8 @@
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\AdminAuth\LoginController;
 use App\Http\Controllers\Roles\RoleController;
+use App\Http\Controllers\Admin\RoleController as NewRoleController;
+use App\Http\Controllers\Admin\UserRoleController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -25,20 +27,25 @@ Route::middleware('auth.admin')->prefix('super')->group(function () {
 
 
 
-Route::middleware('auth')->group(function () {
+Route::middleware('auth.admin')->prefix('super')->group(function () {
     Route::get('/api/my-table-data', [RoleController::class, 'getTableData'])->name('api.my-table-data');
     Route::get('/api/role-list', [RoleController::class, 'roleList'])->name('role.role-list');
     Route::post('/api/role-create', [RoleController::class, 'roleCreate'])->name('role.role-create');
     Route::delete('/api/role-delete', [RoleController::class, 'roleDelete'])->name('role.role-delete');
-
+    Route::get('/api/modules/permissions', [RoleController::class, 'getModulesPermissions'])->name('api.modules.permissions');
 
     // roles create
     Route::get('roles/view', [RoleController::class, 'roleView'])->name('roles.view');
+    Route::get('roles/add', [RoleController::class, 'add'])->name('roles.add');
+
+    // permission management
+    Route::get('permissions/settings', [RoleController::class, 'permissionSettings'])->name('permissions.settings');
+    Route::get('permissions/audit', [RoleController::class, 'permissionAudit'])->name('permissions.audit');
 
     Route::get('user/assign/role/edit/{userId}', [RoleController::class, 'userAssignRoleEdit'])->name('user.assign-role-edit');
     Route::post('user/assign/role/update', [RoleController::class, 'userAssignRoleUpdate'])->name('user.assign-role-update');
 
-    Route::post('/get-group-permissions', [RoleController::class, 'getGroupPermissions'])->name('get.group.permissions');
+    Route::get('/get-group-permissions', [RoleController::class, 'getGroupPermissions'])->name('get.group.permissions');
 
     Route::prefix('roles/permission')->group(function () {
         Route::controller(RoleController::class)->group(function () {
@@ -51,4 +58,18 @@ Route::middleware('auth')->group(function () {
             Route::get('/edit/{id}', 'edit')->name('permission-edit');
         });
     });
+});
+
+// New Permission-based Role Management Routes
+Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('roles', [NewRoleController::class, 'index'])->name('roles.index');
+    Route::get('roles/create', [NewRoleController::class, 'create'])->name('roles.create');
+    Route::post('roles', [NewRoleController::class, 'store'])->name('roles.store');
+    Route::get('roles/{role}/edit', [NewRoleController::class, 'edit'])->name('roles.edit');
+    Route::put('roles/{role}', [NewRoleController::class, 'update'])->name('roles.update');
+    Route::delete('roles/{role}', [NewRoleController::class, 'destroy'])->name('roles.destroy');
+    
+    Route::get('users/roles', [UserRoleController::class, 'index'])->name('users.roles.index');
+    Route::get('users/{user}/roles/edit', [UserRoleController::class, 'edit'])->name('users.roles.edit');
+    Route::post('users/{user}/roles', [UserRoleController::class, 'update'])->name('users.roles.update');
 });

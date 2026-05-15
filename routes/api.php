@@ -29,6 +29,7 @@ Route::get('/terms', [TermsController::class, 'getTerms']);
 Route::get('/privacy-policy', [AboutController::class, 'getAbout']);
 
 Route::post('/v1/insert-contact', [AboutController::class, 'insertContact']);
+Route::post('/v1/connection-request', [AboutController::class, 'connectionRequest']);
 
 Route::get('/partner-images', function () {
     $files = File::files(public_path('images/partner'));
@@ -39,4 +40,5 @@ Route::get('/partner-images', function () {
 
 
 Route::post('/cookie-consent', [CookieConsentController::class, 'store']);
+
 

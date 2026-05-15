@@ -4,6 +4,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 
@@ -251,5 +252,67 @@ if (!function_exists('badge')) {
         ];
 
         return $badges[strtolower($status)] ?? '<span class="badge bg-secondary-subtle text-secondary">' . $value . '</span>';
+    }
+}
+
+if (!function_exists('owner_id')) {
+    function owner_id(): int|string|null
+    {
+        // Return the current user's ID, or 1 for super admin
+        if (Auth::check()) {
+            return Auth::id();
+        }
+
+        // Fallback for system operations
+        return 1;
+    }
+}
+
+if (!function_exists('has_owner_id_column')) {
+    function has_owner_id_column($table): bool
+    {
+        try {
+            return \Schema::hasColumn($table, 'owner_id');
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
+}
+
+if (!function_exists('has_column')) {
+    function has_column($table, $column): bool
+    {
+        try {
+            return \Schema::hasColumn($table, $column);
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
+}
+
+
+
+if (!function_exists('actionDropdownWithOutDelete')) {
+    function actionDropdownWithOutDelete($id, $editRoute, $viewRoute = null): string
+    {
+        return '<div class="dropdown d-inline-block">
+                    <button class="btn btn-soft-secondary btn-sm dropdown"
+                            type="button"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                                <i class="ri-more-fill align-middle"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        ' . ($viewRoute ? '<li>
+                                                <a href="' . $viewRoute . '" class="dropdown-item">
+                                                    <i class="ri-eye-fill align-bottom me-2 text-muted"></i>View
+                                                </a>
+                                            </li>' : '') . '<li>
+                            <a href="' . $editRoute . '" class="dropdown-item edit-item-btn">
+                                <i class="ri-pencil-fill align-bottom me-2 text-muted"></i> Edit
+                            </a>
+                        </li>
+                    </ul>
+                </div>';
     }
 }

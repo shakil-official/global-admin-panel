@@ -1,4 +1,4 @@
-@extends('layouts.main')  <!-- Extends the base layout -->
+@extends('ladmin.layoutsayouts.main')  <!-- Extends the base layout -->
 @section('page_title','User List')
 
 @push('styles')

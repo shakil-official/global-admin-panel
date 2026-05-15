@@ -1,3 +1,5 @@
+@auth()
+@if (auth()->user()->can('blog.view') || auth()->user()->can('category.view') || auth()->user()->can('faq.view'))
 <li class="nav-item">
     <a class="nav-link menu-link {{ request()->routeIs('category.*', 'sub-category.*', 'blog.*') ? 'active' : '' }}"
        href="#categorySetting"
@@ -6,8 +8,6 @@
        aria-expanded="{{ request()->routeIs('category.*', 'sub-category.*', 'blog.*') ? 'true' : 'false' }}"
        aria-controls="categorySetting">
         <i data-feather="list" class="icon-dual"></i>
-
-
         <span>Blog</span>
     </a>
 
@@ -15,13 +15,16 @@
          id="categorySetting">
         <ul class="nav nav-sm flex-column">
 
+            @if (auth()->user()->can('category.view'))
             <li class="nav-item">
                 <a href="{{ route('category.index') }}"
                    class="nav-link {{ request()->routeIs('category.index') ? 'active' : '' }}">
                     Category
                 </a>
             </li>
+            @endif
 
+            @if (auth()->user()->can('blog.view'))
             <li class="nav-item">
                 <a href="{{ route('blog.index') }}"
                    class="nav-link {{ request()->routeIs('blog.*') ? 'active' : '' }}"
@@ -29,19 +32,13 @@
                     Blog
                 </a>
             </li>
-
-
-            {{--            <li class="nav-item">--}}
-            {{--                <a href="{{ route('sub-category.index') }}"--}}
-            {{--                   class="nav-link {{ request()->routeIs('sub-category.index') ? 'active' : '' }}">--}}
-            {{--                    Sub Category--}}
-            {{--                </a>--}}
-            {{--            </li>--}}
-
+            @endif
         </ul>
     </div>
 </li>
+@endif
 
+@if (auth()->user()->can('faq.view') || auth()->user()->can('faqcategory.view'))
 <li class="nav-item">
     <a class="nav-link menu-link {{ request()->routeIs('faq-category.*', 'faq.*') ? 'active' : '' }}"
        href="#FaqSetting"
@@ -57,19 +54,25 @@
          id="FaqSetting">
         <ul class="nav nav-sm flex-column">
 
+            @if (auth()->user()->can('faqcategory.view'))
             <li class="nav-item">
                 <a href="{{ route('faq-category.index') }}"
                    class="nav-link {{ request()->routeIs('faq-category.index') ? 'active' : '' }}">
                     Faq Category
                 </a>
             </li>
+            @endif
 
+            @if (auth()->user()->can('faq.view'))
             <li class="nav-item">
                 <a href="{{ route('faq.index') }}"
                    class="nav-link {{ request()->routeIs('faq.index') ? 'active' : '' }}">
                     Faq
                 </a>
             </li>
+            @endif
         </ul>
     </div>
 </li>
+@endif
+@endauth

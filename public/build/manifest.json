@@ -4,8 +4,14 @@
     "src": "Rollup HTML Asset"
   },
   "resources/css/app.css": {
-    "file": "app-xgLFWedx.css",
+    "file": "app-Dtms7t6s.css",
     "src": "resources/css/app.css",
+    "isEntry": true
+  },
+  "resources/js/app.js": {
+    "file": "app-DgTpxU8y.js",
+    "name": "app",
+    "src": "resources/js/app.js",
     "isEntry": true
   },
   "resources/js/app.jsx": {

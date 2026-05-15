@@ -16,6 +16,10 @@
     },
     "dependencies": {
         "@vitejs/plugin-react": "^4.3.3",
+        "datatables.net": "^2.3.7",
+        "datatables.net-bs4": "^2.3.7",
+        "jquery": "^4.0.0",
+        "lodash": "^4.17.23",
         "lucide-react": "^0.511.0",
         "react": "^18.3.1",
         "react-dom": "^18.3.1",

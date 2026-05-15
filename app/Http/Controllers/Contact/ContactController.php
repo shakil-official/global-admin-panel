@@ -88,7 +88,7 @@ class ContactController extends Controller
             'buttons' => [
                 [
                     'label' => 'Back to List',
-                    'url' => route('contact.index'),
+                    'url' => route('contact.view'),
                     'icon' => 'ri-add-line',
                     'classes' => 'btn-sm btn-outline-danger',
                 ],
@@ -112,7 +112,7 @@ class ContactController extends Controller
         $response = $this->service->update($id, $request->all());
 
         if ($response) {
-            return redirect()->route('contact.index')->with('success', 'Contact updated successfully.');
+            return redirect()->route('contact.view')->with('success', 'Contact updated successfully.');
         }
 
         return redirect()->back()->with('error', 'Something went wrong. Please try again.');

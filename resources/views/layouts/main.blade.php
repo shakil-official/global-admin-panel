@@ -101,6 +101,7 @@
 </div>
 
 <!-- JAVASCRIPT -->
+<script src="{{ asset('theme/assets/libs/jquery/jquery.min.js') }}"></script>
 <script src="{{ asset('theme/assets/libs/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 <script src="{{ asset('theme/assets/libs/simplebar/simplebar.min.js') }}"></script>
 <script src="{{ asset('theme/assets/libs/node-waves/waves.min.js') }}"></script>

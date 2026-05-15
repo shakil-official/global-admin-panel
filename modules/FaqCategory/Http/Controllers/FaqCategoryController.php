@@ -37,7 +37,7 @@ class FaqCategoryController extends Controller
             'buttons' => [
                 [
                     'label' => 'Add New Item',
-                    'url' => route('faq-category.add'),
+                    'url' => route('faqcategory.add'),
                     'icon' => 'ri-add-line',
                     'classes' => 'btn-sm btn-outline-primary',
                 ],
@@ -54,7 +54,7 @@ class FaqCategoryController extends Controller
     public function add(): Factory|Application|View|\Illuminate\Contracts\Foundation\Application
     {
         $formConfig = (new FormMaking())
-            ->action(route('faq-category.store'))
+            ->action(route('faqcategory.store'))
             ->enctype('multipart/form-data')
             ->method('POST')
             // Title
@@ -153,7 +153,7 @@ class FaqCategoryController extends Controller
         $data = $this->service->find($id);
 
         $formConfig = (new FormMaking())
-            ->action(route('faq-category.update', ['id' => $id]))
+            ->action(route('faqcategory.update', ['id' => $id]))
             ->enctype('multipart/form-data')
             ->method('POST')
 
@@ -283,7 +283,7 @@ class FaqCategoryController extends Controller
                     : 'No Image'; // Return image tag or fallback text
             })
             ->addColumn('action', function ($data) {
-                $editRoute = route('faq-category.edit', $data->id);
+                $editRoute = route('faqcategory.edit', $data->id);
                 $viewRoute = null; // optional
                 return actionDropdown($data->id, $editRoute, $viewRoute);
             })

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\About;
 use App\Models\Contact;
+use App\Models\FormStore;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Mail\Mailables\Address;
@@ -62,6 +63,44 @@ class AboutController extends Controller
                 'error' => $e->getMessage(),
             ], 500);
         }
+    }
+
+    private function formDataStore(Request $request, $extra)
+    {
+        return FormStore::query()->create([
+            'name'       => $request->input('name'),
+            'mobile'     => $request->input('mobile'),
+            'address'    => $request->input('address'),
+            'type'       => $request->input('type'),
+            'extra_data' => json_encode($extra),
+            'message'    => $request->input('message'),
+            'package'    => $request->input('package'),
+            'status'     => $request->input('status', 'pending'),
+            'source'     => $request->input('source', FormStore::SOURCE_PACKAGE),
+        ]);
+    }
+
+    public function connectionRequest(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'mobile' => 'nullable|string|max:20',
+            'address' => 'nullable|string',
+            'message' => 'nullable|string',
+        ]);
+
+        $extra = [
+          'preferredDate' => $request->input('preferredDate', null),
+          'mapLink' => $request->input('mapLink', null),
+        ];
+
+        $formStore = $this->formDataStore($request, $extra);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Connection request submitted successfully.',
+            'data' => $formStore,
+        ]);
     }
 
 }

@@ -2,6 +2,7 @@
 
 namespace Modules\Package\Http\Controllers;
 
+use App\Models\FormStore;
 use Modules\Package\Services\Contracts\PackageServiceInterface;
 use Modules\Package\Models\Package;
 use App\Helpers\Builder\FormMaking;
@@ -354,7 +355,7 @@ class PackageController extends Controller
                     'name' => 'features',
                     'label' => 'Features',
                     'col' => 'col-md-12 mb-3',
-                    'callback' => function() use ($features) {
+                    'callback' => function () use ($features) {
                         $html = '<div class="form-group">
                             <label>Features</label>
                             <div id="feature-wrapper">';
@@ -569,4 +570,86 @@ class PackageController extends Controller
             ->rawColumns(['image', 'action'])
             ->toJson();
     }
+
+
+    public function packageRequest(): View|Application|Factory|\Illuminate\Contracts\Foundation\Application
+    {
+        return view('Package::package.list')->with([
+            'title' => 'Request',
+            'buttons' => [],
+            'table' => 'package_table_request',
+            'columns' => [
+                'Name',
+                'Mobile',
+                'Address',
+                'Type',
+                'Preferred Date',
+                'Map Link',
+                'message',
+                'package',
+                'source',
+                'Date',
+            ],
+        ]);
+    }
+
+    public function packageRequestDataTableList(): JsonResponse
+    {
+        $data = FormStore::query()->where([
+            'source' => FormStore::SOURCE_PACKAGE
+        ])->orderByDesc('id');
+
+        return DataTables::of($data)
+            ->filter(function ($query) {
+                if (request()->has('name') && !is_null(request('name'))) {
+                    $query->where('name', 'like', '%' . request('name') . '%');
+                }
+            }, true)
+            ->addColumn('name', function ($data) {
+                return $data->name;
+            })
+            ->addColumn('message', function ($data) {
+                return $data->description;
+            })
+            ->addColumn('preferred date', function ($data) {
+                $data = json_decode($data->extra_data, true);
+                return is_null($data['preferredDate']) ? 'N/A' : $data['preferredDate'];
+            })
+            ->addColumn('map link', function ($data) {
+                $data = json_decode($data->extra_data, true);
+                return is_null($data['mapLink']) ? 'N/A' : $data['mapLink'];
+            })
+            ->addColumn('date', function ($data) {
+                return $data->created_at;
+            })
+            ->editColumn('status', function ($data) {
+
+                $statusMessages = [
+                    'pending' => 'Pending',
+                    'reply' => 'Reply',
+                    'waiting' => 'Waiting',
+                    'contacted' => 'Contacted',
+                    'not contacted' => 'Not Contacted',
+                    'rejected' => 'Rejected',
+                    'cancelled' => 'Cancelled',
+                ];
+
+                // Check if the provided status code exists in the array
+                if (array_key_exists($data->status, $statusMessages)) {
+                    // Return the corresponding status message
+                    return $statusMessages[$data->status];
+                } else {
+                    // Return a default message for unknown status codes
+                    return 'Unknown Status';
+                }
+            })
+            ->addColumn('action', function ($data) {
+                $editRoute = route('contact.edit', $data->id);
+
+                return actionDropdown($data->id, $editRoute);
+            })
+            ->toJson();
+    }
+
+
 }

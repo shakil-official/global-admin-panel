@@ -26,7 +26,7 @@ class Kernel extends HttpKernel
     protected $routeMiddleware = [
         // Add your admin middleware
         'auth.admin' => \App\Http\Middleware\AdminMiddleware::class,
-//        'checkPermission' => \App\Http\Middleware\CheckPermission::class,
+        'permission' => \App\Http\Middleware\CheckPermission::class,
 
     ];
 

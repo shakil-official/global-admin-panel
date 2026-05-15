@@ -59,7 +59,7 @@
                 lengthChange: true,
                 processing: true,
                 serverSide: true,
-                ajax: "{{ route('network-partner.list') }}",
+                ajax: "{{ route('networkpartner.list') }}",
                 columns: dataTableColumns,
                 language: {
                     lengthMenu: "_MENU_ ",
@@ -86,7 +86,7 @@
                 }).then((result) => {
                     if (result.isConfirmed) {
                         $.ajax({
-                            url: '{{ route('network-partner.delete') }}', // Your Laravel route
+                            url: '{{ route('networkpartner.delete') }}', // Your Laravel route
                             type: 'delete',
                             data: {
                                 _token: '{{ csrf_token() }}', // CSRF token
